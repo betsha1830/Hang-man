@@ -4,7 +4,7 @@ class Hangman
     words = File.open('/home/hp/Documents/ruby files/Hang-man/words.txt', 'r+')
   end
 
-  def random_word_generator()
+  def random_word_generator(word_list)
     word_list = copy_words
     counter = 0
     random = Random.new
@@ -19,7 +19,17 @@ class Hangman
     random_word.strip!
   end
 
+  def word_to_dash(word)
+    secret_word = ''
+    counter = 0
+    until counter == word.length
+      secret_word += '_ '
+      counter += 1
+    end
+    secret_word.strip!
+  end
+
 end
 
 game = Hangman.new
-puts game.random_word_generator
+puts game.word_to_dash
