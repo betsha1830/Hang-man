@@ -66,6 +66,7 @@ class Hangman
 
   def dash_to_word(dashed_word)
     counter = 0
+    incorrect_guess = 0
     until dashed_word.length == counter
       word = string_to_arr(@random_word[counter].to_s)
       dashes = string_to_arr(dashed_word[counter].to_s)
@@ -73,15 +74,15 @@ class Hangman
       word.each_with_index do |item, index|
         if word[index] == 'e'
           dashes[index * 2] = word[index]
-        else
-          @num_of_guesses_left -= 1
         end
       end
 
+      word.any?('e') ? '' : incorrect_guess += 1
       dashes = arr_to_string(dashes)
       @secret_word[counter] = dashes
       counter += 1
     end
+    incorrect_guess == @random_word.length ? @num_of_guesses_left -= 1 : ''
     @secret_word
   end
 
