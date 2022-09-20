@@ -10,6 +10,7 @@ class Hangman
   def call
     puts @random_word
     dash_to_word(@secret_word)
+    print_checked_answer
   end
 
   def string_to_arr(string)
@@ -82,6 +83,14 @@ class Hangman
       counter += 1
     end
     @secret_word
+  end
+
+  def print_checked_answer
+    checked_answer = ''
+    @secret_word.each do |item|
+      checked_answer += "#{item}    "
+    end
+    puts "#{checked_answer.strip!}  Number of guesses left: #{@num_of_guesses_left}"
   end
 end
 
