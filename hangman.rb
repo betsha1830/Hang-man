@@ -1,3 +1,5 @@
+require 'yaml'
+
 class Hangman
 
   def initialize
@@ -5,6 +7,33 @@ class Hangman
     @guessed_letters = []
     @random_word = random_word_generator
     @secret_word = []
+    load_game
+  end
+
+  def load_game 
+    puts 'Would you like to load a saved game? Type y for yes or anything else for no.'
+    @input = gets.chomp.downcase
+    if @input == 'y'
+      save = ''
+      loaded_game = YAML.safe_load(File.read('saved_game.txt'))
+      @num_of_guesses_left = loaded_game['num_of_guesses_left']
+      @guessed_letters = loaded_game['guessed_letters']
+      @random_word = loaded_game['random_word']
+      @secret_word = loaded_game['secret_word']
+      game
+    else
+      game
+    end
+  end
+  
+  def save_game 
+    save = YAML.dump(
+      'num_of_guesses_left' => @num_of_guesses_left+=1,
+      'guessed_letters' => @guessed_letters,
+      'random_word' => @random_word,
+      'secret_word' => @secret_word
+    )
+    File.open('saved_game.txt', 'w+') {|file| file.write save}
   end
 
   def game
@@ -12,17 +41,23 @@ class Hangman
     random_word = word_to_dash(@random_word)
     dash_to_word(random_word)
     print_checked_answer
-    until @num_of_guesses_left == 0 || word == @random_word
+    until @num_of_guesses_left == 0 || word == @random_word || @input == 'saq'
       user_input
       dash_to_word(random_word)
       print_checked_answer
       word = check_guessed_word
     end
-
+    
     if word == @random_word
       puts "Congrats you've won the game."
-    else
+    elsif word != check_guessed_word && @input != 'saq'
       puts "Ahhh! You've lost but the secret words are: #{readable_word}"
+    else
+      puts "Your game has been saved successfully."
+    end
+
+    if @input.downcase == 'saq'
+      save_game
     end
   end
 
@@ -133,9 +168,11 @@ class Hangman
     @secret_word.each do |item|
       checked_answer += "#{item}    "
     end
-    puts "#{checked_answer.strip!}  Number of guesses left: #{@num_of_guesses_left}  Guessed letters: #{arr_to_string(@guessed_letters)}"
+    puts "#{checked_answer.strip!}  Number of guesses left: #{@num_of_guesses_left}  Guessed letters: #{arr_to_string(@guessed_letters)} \n Type in saq to save and quit the game."
   end
 end
 
 hang = Hangman.new
-puts hang.game
+puts hang
+
+
