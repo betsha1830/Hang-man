@@ -8,11 +8,12 @@ class Hangman
   end
 
   def game
-    dash_to_word(word_to_dash(@random_word))
+    random_word = word_to_dash(@random_word)
+    dash_to_word(random_word)
     print_checked_answer
     until @num_of_guesses_left == 0
-      dash_to_word(word_to_dash(@random_word))
       user_input
+      dash_to_word(random_word)
       print_checked_answer
     end
   end
@@ -21,6 +22,7 @@ class Hangman
     @input = ''
     puts "please enter your guess: \b"
     @input = gets.chomp
+    @guessed_letters.push(@input)
   end
 
   def string_to_arr(string)
@@ -80,10 +82,12 @@ class Hangman
     until dashed_word.length == counter
       word = string_to_arr(@random_word[counter].to_s)
       dashes = string_to_arr(dashed_word[counter].to_s)
-      
+      puts @guessed_letters
       word.each_with_index do |item, index|
-        if word[index] == @input
-          dashes[index * 2] = word[index]
+        @guessed_letters.each do |letter|
+          if word[index] == letter
+            dashes[index * 2] = word[index]
+          end
         end
       end
 
