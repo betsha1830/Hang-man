@@ -30,7 +30,7 @@ class Hangman
   end
   
   def copy_words
-    words = File.open('/home/hp/Documents/ruby files/Hang-man/words.txt', 'r+')
+    words = File.open('words.txt', 'r+')
   end
 
   def random_word_generator
