@@ -1,16 +1,26 @@
 class Hangman
 
   def initialize
-    @num_of_guesses_left = 12
+    @num_of_guesses_left = 13
     @guessed_letters = []
     @random_word = random_word_generator
-    @secret_word = word_to_dash(@random_word)
+    @secret_word = []
   end
 
-  def call
-    puts @random_word
-    dash_to_word(@secret_word)
+  def game
+    dash_to_word(word_to_dash(@random_word))
     print_checked_answer
+    until @num_of_guesses_left == 0
+      dash_to_word(word_to_dash(@random_word))
+      user_input
+      print_checked_answer
+    end
+  end
+
+  def user_input
+    @input = ''
+    puts "please enter your guess: \b"
+    @input = gets.chomp
   end
 
   def string_to_arr(string)
@@ -37,7 +47,7 @@ class Hangman
     word_list = copy_words
     counter = 0
     random = Random.new
-    num_of_words = random.rand(3..5)
+    num_of_words = random.rand(1..1)
     random_word = []
     until counter == num_of_words
       random_pos = random.rand(1..9894)
@@ -72,12 +82,12 @@ class Hangman
       dashes = string_to_arr(dashed_word[counter].to_s)
       
       word.each_with_index do |item, index|
-        if word[index] == 'e'
+        if word[index] == @input
           dashes[index * 2] = word[index]
         end
       end
 
-      word.any?('e') ? '' : incorrect_guess += 1
+      word.any?(@input) ? '' : incorrect_guess += 1
       dashes = arr_to_string(dashes)
       @secret_word[counter] = dashes
       counter += 1
@@ -95,5 +105,5 @@ class Hangman
   end
 end
 
-game = Hangman.new
-puts game.call
+hang = Hangman.new
+puts hang.game
